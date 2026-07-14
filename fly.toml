@@ -1,29 +1,31 @@
-# Fly.io Konfiguration.
-# Der App-Name muss weltweit eindeutig sein - beim ersten "fly launch" wirst du gefragt,
-# ob du diesen Namen behalten oder aendern willst (siehe README.md, Schritt 2).
-app = "weltklasse-pianistinnen"
-primary_region = "fra"  # Frankfurt - nahester Fly.io-Standort zu Hannover
+# fly.toml app configuration file generated for pianosearch on 2026-07-14T00:20:18Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'pianosearch'
+primary_region = 'ams'
 
 [build]
 
 [env]
-  PORT = "8080"
+  PORT = '8080'
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ['app']
 
   [[http_service.checks]]
-    grace_period = "10s"
-    interval = "30s"
-    method = "GET"
-    timeout = "5s"
-    path = "/api/health"
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/api/health'
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "256mb"
+  size = 'shared-cpu-1x'
+  memory = '256mb'
