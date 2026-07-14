@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weltklasse — Pianistinnen 2026</title>
+<style>
+  :root{
+    --bg: #0a0908;
+    --card: #1b1613;
+    --card2: #14100d;
+    --gold: #cba25a;
+    --gold-bright: #e8c988;
+    --gold-soft: #a5865030;
+    --text: #ece6dc;
+    --text-dim: #a89d8d;
+    --line: #3a322a;
+    --serif: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; padding:0; min-height:100%; background:var(--bg); color:var(--text); font-family:var(--sans); overflow-x:hidden; }
+
+  /* ---------- Ambient background: crossfading photo layers + glow ---------- */
+  .bg-scene{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .bg-scene::before{ content:""; position:absolute; inset:0; z-index:2;
+    background:
+      radial-gradient(1200px 700px at 22% -10%, #1c150e00 0%, transparent 55%),
+      linear-gradient(180deg, #0a0908cc 0%, #0a0908ee 55%, #0a0908 100%);
+  }
+  .bg-photo{ position:absolute; inset:-4%; width:108%; height:108%; object-fit:cover; opacity:0;
+    filter:grayscale(.35) brightness(.55) contrast(1.05); animation: crossfade 26s ease-in-out infinite; }
+  .bg-photo.p1{ animation-delay:0s; }
+  .bg-photo.p2{ animation-delay:13s; }
+  @keyframes crossfade{
+    0%   { opacity:0; transform:scale(1.04); }
+    8%   { opacity:.34; }
+    42%  { opacity:.34; }
+    50%  { opacity:0; transform:scale(1.1); }
+    100% { opacity:0; }
+  }
+  .bg-glow{ position:absolute; width:520px; height:520px; border-radius:50%; filter:blur(120px); opacity:.14; background:var(--gold);
+    top:8%; left:8%; z-index:1; animation: floatGlow 16s ease-in-out infinite; }
+  @keyframes floatGlow{ 0%,100%{ transform:translate(0,0);} 50%{ transform:translate(60px,40px);} }
+  .keys-strip{ position:absolute; left:0; right:0; bottom:0; height:5px; opacity:.4; z-index:2;
+    background: repeating-linear-gradient(90deg, var(--gold) 0 2px, transparent 2px 26px); }
+  .grain{ position:absolute; inset:0; z-index:3; opacity:.035; pointer-events:none; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* ---------- HERO (großflächiges Bild + Parallax + Kontakt) ---------- */
+  .hero{ position:relative; width:100%; min-height:78vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; overflow:hidden; padding:60px 20px 80px; }
+  .hero-bg{ position:absolute; inset:0; z-index:0; }
+  .hero-bg img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 20%;
+    filter:saturate(1.05) contrast(1.05) brightness(.62); transform:scale(1.08); will-change:transform; }
+  .hero-bg::after{ content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, #0a0908cc 0%, #0a090866 30%, #0a090899 70%, var(--bg) 100%),
+                radial-gradient(700px 500px at 50% 30%, #00000000, #0a0908 90%); }
+  .parallax-orb{ position:absolute; border-radius:9999px; pointer-events:none; will-change:transform; filter:blur(90px);
+    animation: orbPulse 9s ease-in-out infinite; z-index:1; }
+  @keyframes orbPulse{ 0%,100%{ opacity:.5; } 50%{ opacity:.85; } }
+  .hero-content{ position:relative; z-index:2; max-width:720px; }
+  .hero-kicker{ letter-spacing:.3em; text-transform:uppercase; font-size:12px; color:var(--gold); font-weight:600; margin-bottom:16px; }
+  .hero h1{ font-family:var(--serif); font-size:clamp(38px,6vw,64px); font-weight:400; margin:0 0 14px;
+    background:linear-gradient(120deg, var(--gold-bright), #fff5df 40%, var(--gold)); -webkit-background-clip:text; background-clip:text;
+    color:transparent; background-size:200% auto; animation:shine 6s linear infinite; line-height:1.1; }
+  .hero p.lead{ color:var(--text-dim); font-size:16px; line-height:1.7; max-width:56ch; margin:0 auto 28px; }
+  .hero-scroll-cue{ margin-top:10px; color:var(--text-dim); font-size:11px; letter-spacing:.15em; text-transform:uppercase; opacity:.7;
+    animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(6px);} }
+
+  /* Kontakt-Leiste, prominent unter dem Hero */
+  .contact-bar{ position:relative; z-index:2; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:8px; }
+  .contact-chip{ display:inline-flex; align-items:center; gap:7px; background:#00000055; backdrop-filter:blur(6px);
+    border:1px solid var(--gold-soft); color:var(--text); text-decoration:none; padding:9px 16px; border-radius:999px;
+    font-size:13px; transition:.2s; }
+  .contact-chip:hover{ border-color:var(--gold); background:#00000088; transform:translateY(-2px); }
+  .contact-chip svg{ width:14px; height:14px; color:var(--gold); flex-shrink:0; }
+
+  .app{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:22px 16px 34px; }
+
+  .brand{ display:flex; align-items:center; gap:10px; margin-bottom:14px; opacity:.9; }
+  .brand svg{ width:22px; height:22px; }
+  .brand span{ font-family:var(--serif); font-style:italic; font-size:14px; color:var(--text-dim); letter-spacing:.04em; }
+
+  .tabs{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; justify-content:center; }
+  .tab{ background:transparent; border:1px solid var(--line); color:var(--text-dim); padding:9px 16px; border-radius:999px;
+    font-size:13px; cursor:pointer; letter-spacing:.02em; transition:.2s; font-family:var(--sans); position:relative; }
+  .tab:hover{ color:var(--text); border-color:var(--gold-soft); transform:translateY(-1px); }
+  .tab.active{ color:#151008; background:linear-gradient(135deg, var(--gold-bright), var(--gold)); border-color:var(--gold); font-weight:600;
+    box-shadow:0 4px 18px -4px #cba25a55; }
+
+  .book-wrap{ perspective:1800px; }
+  .book{
+    position:relative; width:min(920px, 94vw); height:min(660px, 82vh);
+    background:linear-gradient(155deg, var(--card), var(--card2) 70%);
+    border:1px solid var(--line); border-radius:16px;
+    box-shadow: 0 30px 90px -20px rgba(0,0,0,.75), inset 0 0 60px #00000055;
+    overflow:hidden; transform-style:preserve-3d; transition: transform .05s;
+  }
+  .book::before{ content:""; position:absolute; inset:0;
+    background: linear-gradient(90deg, #000000aa 0%, transparent 3%, transparent 97%, #000000aa 100%);
+    pointer-events:none; z-index:5; }
+  .spine{ position:absolute; left:50%; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg, transparent, var(--gold-soft) 20%, var(--gold-soft) 80%, transparent);
+    transform:translateX(-1px); z-index:4; opacity:.5; }
+
+  .page{ position:absolute; inset:0; padding:38px 50px; display:none; flex-direction:column; overflow-y:auto;
+    backface-visibility:hidden; }
+  .page.active{ display:flex; }
+  .page.enter{ animation: pageIn .5s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes pageIn{ from{opacity:0; transform:translateX(18px) rotateY(-6deg);} to{opacity:1; transform:translateX(0) rotateY(0);} }
+
+  .kicker{ letter-spacing:.22em; text-transform:uppercase; font-size:11px; color:var(--gold); font-weight:600; margin-bottom:6px; }
+  .rank{ font-family:var(--serif); font-size:52px; color:var(--gold-soft); position:absolute; top:16px; right:32px; opacity:.5; font-style:italic; }
+
+  /* ---------- Portrait / gallery ---------- */
+  .portrait-row{ display:flex; gap:20px; align-items:flex-start; margin-bottom:4px; }
+  .gallery{ display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+  .gallery-main{ width:104px; height:104px; border-radius:12px; object-fit:cover; border:1px solid var(--line);
+    background:#241d17; transition:.25s; cursor:pointer; }
+  .gallery-main:hover{ transform:scale(1.03); box-shadow:0 8px 24px -8px #000a; }
+  .portrait-mono{ width:104px; height:104px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-size:36px; color:var(--gold); background:linear-gradient(155deg,#241d17,#171310); border:1px solid var(--gold-soft); }
+  .thumbs{ display:flex; gap:5px; }
+  .thumbs img{ width:30px; height:30px; object-fit:cover; border-radius:5px; border:1px solid var(--line); cursor:pointer; opacity:.65; transition:.15s; }
+  .thumbs img:hover, .thumbs img.sel{ opacity:1; border-color:var(--gold); }
+  .img-attrib-link{ font-size:9px; color:var(--text-dim); text-decoration:none; opacity:.65; max-width:104px; line-height:1.3; display:block; }
+  .img-attrib-link:hover{ color:var(--gold); opacity:1; }
+
+  h2.name{ font-family:var(--serif); font-weight:400; font-size:29px; margin:0 0 2px 0; color:var(--text); display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .flag{ font-size:19px; }
+  .meta{ color:var(--text-dim); font-size:12.5px; letter-spacing:.03em; }
+  .social-row{ margin-top:8px; display:flex; gap:8px; }
+  .icon-btn{ display:inline-flex; align-items:center; gap:5px; font-size:11.5px; color:var(--text-dim); text-decoration:none;
+    border:1px solid var(--line); padding:4px 10px; border-radius:999px; transition:.15s; }
+  .icon-btn:hover{ color:var(--gold); border-color:var(--gold-soft); }
+  .icon-btn svg{ width:12px; height:12px; }
+
+  .rule{ height:1px; background:linear-gradient(90deg, var(--gold), transparent); width:70px; margin:13px 0 15px; }
+  .bio{ font-family:var(--serif); font-size:15px; line-height:1.6; color:var(--text); max-width:66ch; white-space:pre-line; }
+  .listening-note{ margin-top:12px; padding:11px 13px; border-left:2px solid var(--gold); background:#00000030; font-size:12.5px;
+    color:var(--text-dim); line-height:1.5; max-width:60ch; font-style:italic; }
+  .listening-note b{ color:var(--gold); font-weight:600; font-style:normal; }
+  .current-note{ margin-top:10px; padding:11px 13px; border-left:2px solid #7fa88a; background:#00000030; font-size:12.5px;
+    color:var(--text-dim); line-height:1.5; max-width:60ch; }
+  .current-note b{ color:#9fc9a8; font-weight:600; }
+
+  .cols{ display:flex; gap:30px; margin-top:14px; flex-wrap:wrap; }
+  .block h4{ font-family:var(--sans); text-transform:uppercase; letter-spacing:.14em; font-size:10.5px; color:var(--gold); margin:0 0 7px 0; font-weight:600; }
+  .block ul{ margin:0; padding:0; list-style:none; }
+  .block li{ font-size:13px; color:var(--text-dim); padding:2px 0 6px; border-bottom:1px dashed var(--line); margin-bottom:5px; max-width:30ch; }
+
+  /* ---------- YouTube ---------- */
+  .yt-section{ margin-top:16px; }
+  .yt-grid{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .yt-card{ width:150px; text-decoration:none; color:var(--text); border:1px solid var(--line); border-radius:8px; overflow:hidden;
+    background:#00000030; transition:.2s; }
+  .yt-card:hover{ border-color:var(--gold-soft); transform:translateY(-2px); }
+  .yt-card img{ width:100%; height:84px; object-fit:cover; display:block; background:#241d17; }
+  .yt-card .yt-title{ font-size:10.5px; padding:6px 8px 8px; line-height:1.35; color:var(--text-dim); }
+  .yt-fallback{ font-size:12.5px; color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold-soft); padding-bottom:2px; }
+  .yt-loading{ font-size:11.5px; color:var(--text-dim); opacity:.6; }
+
+  .links-row{ margin-top:auto; padding-top:14px; display:flex; gap:16px; flex-wrap:wrap; }
+  .links-row a{ color:var(--gold); text-decoration:none; font-size:12px; border-bottom:1px solid var(--gold-soft); padding-bottom:2px; }
+  .links-row a:hover{ border-color:var(--gold); }
+  .img-attrib{ font-size:9.5px; color:var(--text-dim); opacity:.55; margin-top:3px; }
+  .img-attrib a{ color:var(--text-dim); }
+
+  .cover{ align-items:center; justify-content:center; text-align:center; }
+  .cover h1{ font-family:var(--serif); font-size:46px; font-weight:400; margin:0 0 8px;
+    background:linear-gradient(120deg, var(--gold-bright), #fff5df 40%, var(--gold)); -webkit-background-clip:text; background-clip:text;
+    color:transparent; background-size:200% auto; animation:shine 6s linear infinite; }
+  @keyframes shine{ to{ background-position:200% center; } }
+  .cover .sub{ color:var(--text-dim); font-size:14px; max-width:46ch; line-height:1.6; margin-top:10px; }
+  .cover .ornament{ font-size:22px; color:var(--gold); margin:18px 0; letter-spacing:.4em; opacity:.8; }
+  .cover .count-badge{ font-family:var(--sans); font-size:12px; color:var(--gold); border:1px solid var(--gold-soft); border-radius:999px; padding:5px 14px; margin-top:12px; }
+  .cover-accent{ position:absolute; bottom:26px; right:34px; width:74px; height:74px; object-fit:cover; border-radius:8px;
+    border:3px solid #fff; box-shadow:0 10px 26px -6px #000a; opacity:.85; transform:rotate(6deg);
+    animation: accentFloat 7s ease-in-out infinite; filter:saturate(.85); }
+  @keyframes accentFloat{ 0%,100%{ transform:rotate(6deg) translateY(0);} 50%{ transform:rotate(4deg) translateY(-6px);} }
+
+  /* staggered fade-up entrance for content blocks on active pages */
+  .page.enter .bio{ animation: fadeUp .5s ease both; animation-delay:.05s; }
+  .page.enter .listening-note{ animation: fadeUp .5s ease both; animation-delay:.12s; }
+  .page.enter .current-note{ animation: fadeUp .5s ease both; animation-delay:.18s; }
+  .page.enter .cols{ animation: fadeUp .5s ease both; animation-delay:.24s; }
+  .page.enter .yt-section{ animation: fadeUp .5s ease both; animation-delay:.3s; }
+  .page.enter .portrait-row{ animation: fadeUp .45s ease both; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+
+  .gallery-main{ opacity:0; animation: imgFadeIn .5s ease forwards; }
+  @keyframes imgFadeIn{ to{ opacity:1; } }
+  .yt-card img{ opacity:0; animation: imgFadeIn .4s ease forwards; }
+
+  .index-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:5px 36px; margin-top:12px; }
+  .index-grid .row{ display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px dashed var(--line); font-size:13px; color:var(--text-dim); cursor:pointer; transition:.15s; }
+  .index-grid .row:hover{ color:var(--gold); padding-left:4px; }
+  .index-grid .row .n{ color:var(--gold); font-family:var(--serif); margin-right:8px; }
+
+  .note-box{ background:#00000030; border:1px solid var(--line); border-radius:8px; padding:16px 18px; font-size:13px; color:var(--text-dim); line-height:1.6; margin-top:14px; max-width:66ch;}
+
+  .controls{ display:flex; align-items:center; gap:16px; margin-top:20px; color:var(--text-dim); font-size:13px; }
+  .btn{ background:transparent; border:1px solid var(--line); color:var(--text); width:38px; height:38px; border-radius:50%; cursor:pointer;
+    font-size:15px; display:flex; align-items:center; justify-content:center; transition:.2s; }
+  .btn:hover{ border-color:var(--gold); color:var(--gold); transform:scale(1.06); }
+  .btn:disabled{ opacity:.25; cursor:default; transform:none; }
+  .btn.play-btn{ width:auto; border-radius:20px; padding:0 14px; gap:6px; font-size:12px; }
+  .pageno{ font-variant-numeric:tabular-nums; min-width:56px; text-align:center; }
+  .hint{ margin-top:8px; text-align:center; color:var(--text-dim); font-size:11px; opacity:.5; }
+  .loading{ display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-dim); font-size:13px; font-family:var(--serif); }
+
+  /* ---------- Chat widget ---------- */
+  .chat-fab{ position:fixed; bottom:22px; right:22px; width:58px; height:58px; border-radius:50%; z-index:200;
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold)); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px -6px #000a, 0 0 0 0 #cba25a55;
+    animation: fabPulse 3s ease-in-out infinite; transition:.2s; }
+  .chat-fab:hover{ transform:scale(1.06); }
+  .chat-fab svg{ width:26px; height:26px; color:#151008; }
+  @keyframes fabPulse{ 0%,100%{ box-shadow:0 10px 30px -6px #000a, 0 0 0 0 #cba25a40; } 50%{ box-shadow:0 10px 30px -6px #000a, 0 0 0 10px #cba25a00; } }
+  .chat-badge{ position:absolute; top:-4px; right:-4px; width:16px; height:16px; border-radius:50%; background:#e05252;
+    border:2px solid var(--bg); display:none; }
+  .chat-badge.show{ display:block; animation: fadeUp .3s ease; }
+
+  .chat-nudge{ position:fixed; bottom:92px; right:22px; z-index:199; max-width:230px; background:var(--card);
+    border:1px solid var(--gold-soft); border-radius:14px 14px 4px 14px; padding:12px 14px; font-size:12.5px;
+    color:var(--text-dim); box-shadow:0 12px 30px -8px #000c; animation: fadeUp .4s ease; cursor:pointer; display:none; }
+  .chat-nudge.show{ display:block; }
+  .chat-nudge b{ color:var(--gold); }
+
+  .chat-panel{ position:fixed; bottom:22px; right:22px; width:360px; max-width:92vw; height:520px; max-height:78vh;
+    z-index:201; background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    display:none; flex-direction:column; box-shadow:0 30px 70px -12px #000d; animation: slideUp .3s ease-out; }
+  .chat-panel.open{ display:flex; }
+  @keyframes slideUp{ from{ opacity:0; transform:translateY(16px);} to{ opacity:1; transform:translateY(0);} }
+  .chat-header{ padding:14px 16px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;
+    background:linear-gradient(155deg, #241d17, var(--card)); }
+  .chat-header .ttl{ font-family:var(--serif); font-size:15px; color:var(--text); }
+  .chat-header .sub{ font-size:10.5px; color:var(--text-dim); margin-top:2px; }
+  .chat-close{ background:none; border:none; color:var(--text-dim); font-size:18px; cursor:pointer; }
+  .chat-close:hover{ color:var(--gold); }
+  .chat-messages{ flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:8px; font-size:13px; }
+  .chat-msg{ max-width:85%; padding:9px 13px; border-radius:14px; line-height:1.45; }
+  .chat-msg.user{ background:var(--gold); color:#151008; align-self:flex-end; border-bottom-right-radius:4px; }
+  .chat-msg.bot{ background:#00000040; color:var(--text); align-self:flex-start; border-bottom-left-radius:4px; border:1px solid var(--line); }
+  .chat-msg.bot.typing{ color:var(--text-dim); font-style:italic; }
+  .chat-input-row{ padding:10px; border-top:1px solid var(--line); display:flex; gap:8px; }
+  .chat-input-row input{ flex:1; background:#00000040; border:1px solid var(--line); border-radius:999px; padding:9px 14px;
+    color:var(--text); font-size:12.5px; font-family:var(--sans); }
+  .chat-input-row input:focus{ outline:none; border-color:var(--gold-soft); }
+  .chat-input-row button{ background:var(--gold); border:none; border-radius:999px; padding:0 16px; color:#151008;
+    font-weight:600; font-size:12.5px; cursor:pointer; }
+  .chat-context{ font-size:10.5px; color:var(--gold); padding:6px 14px; background:#00000030; border-bottom:1px solid var(--line); }
+
+  @media (max-width: 640px){
+    .page{ padding:28px 22px; }
+    .cols{ gap:20px; }
+    .cover h1{ font-size:34px; }
+  }
+</style>
+</head>
+<body>
+<div class="hero" id="hero">
+  <div class="hero-bg"><img src="/images/accent-glamour.jpg" alt="" id="hero-img" /></div>
+  <div class="parallax-orb" data-speed="0.15" style="width:420px;height:420px; background:#cba25a33; top:-8%; left:-6%;"></div>
+  <div class="parallax-orb" data-speed="0.35" style="width:340px;height:340px; background:#7fa88a2e; top:30%; right:-6%;"></div>
+  <div class="parallax-orb" data-speed="0.22" style="width:300px;height:300px; background:#cba25a22; bottom:-10%; left:35%;"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">Weltklasse Pianistinnen — kuratiert, live aktualisiert</div>
+    <h1>Große Pianistinnen.<br>Eine Bühne.</h1>
+    <p class="lead">40 Porträts, drei kuratierte Listen, live geladene Bilder, Videos und Konzertinfos — plus ein KI-Assistent, der weiß, welches Profil du gerade ansiehst.</p>
+    <div class="contact-bar" id="contact-bar">
+      <a class="contact-chip" href="https://www.linkedin.com/in/filip-makarczyk-aa512813b" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14ZM8.34 18V9.75H5.67V18h2.67Zm-1.34-9.4a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1ZM18.33 18v-4.7c0-2.5-1.34-3.66-3.13-3.66-1.44 0-2.09.79-2.45 1.35v-1.16H10.1c.04.75 0 8.17 0 8.17h2.65v-4.57c0-.24.02-.49.09-.66.2-.49.65-1 1.4-1 .99 0 1.39.75 1.39 1.85V18h2.7Z"/></svg>LinkedIn</a>
+      <a class="contact-chip" href="https://www.xing.com/profile/Filip_Makarczyk/web_profiles?nwt_nav=profile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.19 3h-3.32a.44.44 0 0 0-.42.28l-5.2 9.19 3.31 6.02c.08.15.24.24.41.24h3.31c.17 0 .29-.09.36-.22a.4.4 0 0 0 0-.4l-3.28-5.94 5.21-9.16a.4.4 0 0 0 0-.4.4.4 0 0 0-.38-.21ZM8.44 7.99H5.11a.4.4 0 0 0-.36.22.4.4 0 0 0 0 .4l2.1 3.68-3.3 5.83c-.08.15-.08.29 0 .4.07.13.19.22.36.22h3.33a.44.44 0 0 0 .41-.24l3.33-5.87-2.16-3.8a.44.44 0 0 0-.38-.24Z"/></svg>Xing</a>
+      <a class="contact-chip" href="https://t.me/Alllweeeel6_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.5 2.7 11.9c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.4c.3.9 1.5 1.1 2.1.3l2.4-3 4.7 3.5c.9.6 2.1.1 2.3-1L23 5.9c.2-1.1-.9-1.9-1.9-1.4ZM8.6 14.9l8.8-6.6c.2-.1.4.1.2.3l-7.3 6.9-.3 3.3-1.4-3.9Z"/></svg>Telegram</a>
+      <a class="contact-chip" href="https://landingpagefm.fly.dev" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Portfolio &amp; weitere Projekte</a>
+    </div>
+    <div class="hero-scroll-cue">↓ Künstlerinnen entdecken</div>
+  </div>
+</div>
+
+<div class="bg-scene">
+  <img class="bg-photo p1" src="/images/bg-piano-keys.jpg" alt="" />
+  <img class="bg-photo p2" src="/images/bg-portrait-mood.jpg" alt="" />
+  <div class="bg-glow"></div>
+  <div class="grain"></div>
+  <div class="keys-strip"></div>
+</div>
+
+<div class="app">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#cba25a" stroke-width="1.6"><path d="M4 18 C4 10 8 5 12 5 C16 5 20 10 20 18 L4 18Z"/><path d="M4 18 L4 20 M20 18 L20 20"/></svg>
+    <span>Weltklasse Pianistinnen — kuratiert, live aktualisiert</span>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="book-wrap"><div class="book" id="book"><div class="spine"></div><div class="page active"><div class="loading">Lade Künstlerinnen …</div></div></div></div>
+  <div class="controls">
+    <button class="btn" id="prev">‹</button>
+    <button class="btn play-btn" id="playToggle">⏸ Auto</button>
+    <div class="pageno" id="pageno">1 / 1</div>
+    <button class="btn" id="next">›</button>
+  </div>
+  <div class="hint">← → oder klicken zum Blättern · blättert automatisch alle 8s (Klick/Hover pausiert)</div>
+</div>
+
+<div class="chat-nudge" id="chat-nudge" onclick="openChat()"></div>
+<button class="chat-fab" id="chat-fab" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span class="chat-badge" id="chat-badge"></span>
+</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <div>
+      <div class="ttl">🎹 Klavier-Assistent</div>
+      <div class="sub">kennt alle 40 Porträts dieser Seite</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">&times;</button>
+  </div>
+  <div class="chat-context" id="chat-context">Kein Profil geöffnet — stöbere durch die Listen, ich passe mich an.</div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-msg bot">Hallo! Ich bin der Klavier-Assistent dieser Seite. Frag mich etwas zu einer der 40 Pianistinnen, oder lass dir eine empfehlen.</div>
+  </div>
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Frage stellen …" onkeypress="if(event.key==='Enter') sendChat()">
+    <button onclick="sendChat()">→</button>
+  </div>
+</div>
+
+<script>
+const API = "";
+const AUTO_MS = 8000;
+const IG_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.4.42.6.24 1 .53 1.5.98.45.45.74.9.98 1.5.17.4.36 1.2.42 2.4.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.4-.24.6-.53 1-.98 1.5-.45.45-.9.74-1.5.98-.4.17-1.2.36-2.4.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.4-.42-.6-.24-1-.53-1.5-.98-.45-.45-.74-.9-.98-1.5-.17-.4-.36-1.2-.42-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.4.24-.6.53-1 .98-1.5.45-.45.9-.74 1.5-.98.4-.17 1.2-.36 2.4-.42C8.4 2.2 8.8 2.2 12 2.2Zm0 1.8c-3.15 0-3.52 0-4.76.07-.96.04-1.48.2-1.83.34-.46.18-.78.4-1.13.74-.34.35-.56.67-.74 1.13-.14.35-.3.87-.34 1.83C3.13 8.48 3.13 8.85 3.13 12s0 3.52.07 4.76c.04.96.2 1.48.34 1.83.18.46.4.78.74 1.13.35.34.67.56 1.13.74.35.14.87.3 1.83.34 1.24.06 1.6.07 4.76.07s3.52 0 4.76-.07c.96-.04 1.48-.2 1.83-.34.46-.18.78-.4 1.13-.74.34-.35.56-.67.74-1.13.14-.35.3-.87.34-1.83.06-1.24.07-1.6.07-4.76s0-3.52-.07-4.76c-.04-.96-.2-1.48-.34-1.83a2.98 2.98 0 0 0-.74-1.13 2.98 2.98 0 0 0-1.13-.74c-.35-.14-.87-.3-1.83-.34C15.52 4 15.15 4 12 4Zm0 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 1.8a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm4.8-2a1.08 1.08 0 1 1 0 2.16 1.08 1.08 0 0 1 0-2.16Z"/></svg>';
+const SPOTIFY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.59 14.44a.62.62 0 0 1-.86.2c-2.36-1.44-5.33-1.77-8.83-.97a.62.62 0 1 1-.28-1.22c3.83-.87 7.12-.5 9.77 1.12.3.18.4.57.2.87Zm1.22-2.72a.78.78 0 0 1-1.07.26c-2.7-1.66-6.82-2.14-10.02-1.17a.78.78 0 1 1-.45-1.49c3.65-1.1 8.19-.57 11.28 1.33.37.23.49.72.26 1.07Zm.1-2.83C14.98 9.03 9.9 8.85 6.92 9.76a.93.93 0 1 1-.54-1.78c3.42-1.04 9.1-.83 12.7 1.31a.93.93 0 0 1-.95 1.6Z"/></svg>';
+const LINK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+
+let listsMeta = [], currentListKey = null, dataByList = {}, pages = [], current = 0;
+let autoTimer = null, autoPaused = false;
+const mediaCache = {}, youtubeCache = {};
+
+const bookEl = document.getElementById('book');
+const tabsEl = document.getElementById('tabs');
+
+async function fetchJSON(url, timeoutMs){
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), timeoutMs || 7000);
+  try{
+    const r = await fetch(url, { signal: controller.signal });
+    if(!r.ok) throw new Error('fetch failed: '+url);
+    return await r.json();
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function init(){
+  try{ listsMeta = await fetchJSON(API + '/api/lists'); }
+  catch(e){ bookEl.innerHTML = '<div class="page active"><div class="loading">Verbindung zum Server fehlgeschlagen.</div></div>'; return; }
+  tabsEl.innerHTML = '';
+  listsMeta.forEach((m, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (i===0 ? ' active' : '');
+    b.textContent = m.title + ' (' + m.count + ')';
+    b.addEventListener('click', () => switchList(m.key, b));
+    tabsEl.appendChild(b);
+  });
+  await switchList(listsMeta[0].key, tabsEl.children[0]);
+}
+
+async function switchList(key, btnEl){
+  stopAuto(); currentListKey = key;
+  [...tabsEl.children].forEach(c => c.classList.remove('active'));
+  if(btnEl) btnEl.classList.add('active');
+  if(!dataByList[key]){
+    bookEl.querySelectorAll('.page').forEach(p=>p.remove());
+    const loading = document.createElement('div');
+    loading.className = 'page active';
+    loading.innerHTML = '<div class="loading">Lade Ansicht …</div>';
+    bookEl.appendChild(loading);
+    dataByList[key] = await fetchJSON(API + '/api/list/' + key);
+  }
+  buildPages(dataByList[key]);
+  startAuto();
+}
+
+function el(tag, cls, html){ const e = document.createElement(tag); if(cls) e.className = cls; if(html !== undefined) e.innerHTML = html; return e; }
+
+function buildPages(listData){
+  bookEl.querySelectorAll('.page').forEach(p=>p.remove());
+  pages = []; current = 0;
+  pages.push(makeCover(listData.meta, listData.items.length));
+  pages.push(makeIndex(listData.items));
+  listData.items.forEach((p, i) => pages.push(makeArtist(p, i+1)));
+  pages.push(makeClosing());
+  pages.forEach(p => bookEl.appendChild(p));
+  render(true);
+}
+
+function makeCover(meta, count){
+  const page = el('div','page cover');
+  page.innerHTML = `
+    <div class="kicker">Weltklasse Pianistinnen</div>
+    <h1>${meta.title}</h1>
+    <div class="ornament">✦ ✦ ✦</div>
+    <h1 style="font-size:19px; font-weight:400; color:var(--text-dim); background:none; -webkit-text-fill-color:var(--text-dim); animation:none;">${meta.subtitle}</h1>
+    <p class="sub">${meta.description}</p>
+    <div class="count-badge">${count} Porträts</div>
+  `;
+  return page;
+}
+
+function makeIndex(items){
+  const page = el('div','page');
+  page.innerHTML = `<div class="kicker">Inhalt</div><h1 style="font-family:var(--serif); font-weight:400; font-size:25px; margin:0;">Register</h1><div class="rule"></div>`;
+  const grid = el('div','index-grid');
+  items.forEach((p,i)=>{
+    const row = el('div','row', `<span><span class="n">${String(i+1).padStart(2,'0')}</span>${p.name}</span><span>${p.flag}</span>`);
+    row.addEventListener('click', ()=>{ stopAuto(); current = i+2; render(); });
+    grid.appendChild(row);
+  });
+  page.appendChild(grid);
+  return page;
+}
+
+function makeArtist(p, rank){
+  const page = el('div','page');
+  page.dataset.artistName = p.name;
+  page.dataset.artistSlug = p.slug;
+  const awardsHtml = p.awards.map(a=>`<li>${a}</li>`).join('');
+  const focusHtml = p.focus.map(f=>`<li>${f}</li>`).join('');
+  const noteHtml = p.current_note ? `<div class="current-note"><b>Aktuell:</b> ${p.current_note}</div>` : '';
+  const listeningHtml = p.listening_note ? `<div class="listening-note"><b>Hörtipp:</b> ${p.listening_note}</div>` : '';
+  const igHtml = p.instagram ? `<a class="icon-btn" href="https://instagram.com/${p.instagram}" target="_blank" rel="noopener">${IG_SVG} @${p.instagram}</a>` : '';
+  const spotifyLabel = p.spotify && p.spotify.verified ? 'Spotify' : 'Spotify durchsuchen';
+  const spotifyHtml = p.spotify ? `<a class="icon-btn" href="${p.spotify.url}" target="_blank" rel="noopener">${SPOTIFY_SVG} ${spotifyLabel}</a>` : '';
+  const pressHtml = p.press_url ? `<a class="img-attrib-link" href="${p.press_url}" target="_blank" rel="noopener">📷 Pressefotos (extern, © jeweilige Fotograf:in)</a>` : '';
+  page.innerHTML = `
+    <div class="rank">${String(rank).padStart(2,'0')}</div>
+    <div class="portrait-row">
+      <div class="gallery">
+        <div class="portrait-mono" id="img-${p.slug}">${p.name.charAt(0)}</div>
+        <div class="thumbs" id="thumbs-${p.slug}"></div>
+        ${pressHtml}
+      </div>
+      <div>
+        <div class="kicker">Porträt</div>
+        <h2 class="name">${p.name} <span class="flag">${p.flag}</span></h2>
+        <div class="meta">${p.born}</div>
+        <div class="social-row">
+          <a class="icon-btn" href="${p.official_url}" target="_blank" rel="noopener">${LINK_SVG} ${p.official_label}</a>
+          ${spotifyHtml}
+          ${igHtml}
+        </div>
+      </div>
+    </div>
+    <div class="rule"></div>
+    <div class="bio">${p.bio}</div>
+    ${listeningHtml}
+    ${noteHtml}
+    <div class="cols">
+      <div class="block"><h4>Auszeichnungen</h4><ul>${awardsHtml}</ul></div>
+      <div class="block"><h4>Repertoire-Schwerpunkte</h4><ul>${focusHtml}</ul></div>
+    </div>
+    <div class="yt-section">
+      <h4 style="font-family:var(--sans); text-transform:uppercase; letter-spacing:.14em; font-size:10.5px; color:var(--gold); margin:0 0 4px 0; font-weight:600;">YouTube</h4>
+      <div class="yt-grid" id="yt-${p.slug}"><span class="yt-loading">Suche Videos …</span></div>
+    </div>
+    <div id="attrib-${p.slug}"></div>
+  `;
+  loadMedia(p.slug);
+  loadYoutube(p.slug, p.youtube_search);
+  return page;
+}
+
+function makeClosing(){
+  const page = el('div','page');
+  page.innerHTML = `
+    <div class="kicker">Hinweis zur Methodik</div>
+    <h1 style="font-family:var(--serif); font-weight:400; font-size:25px; margin:0;">Über diese Auswahl</h1>
+    <div class="rule"></div>
+    <div class="bio" style="max-width:70ch;">Eine objektive Weltrangliste gibt es in der klassischen Musik nicht. Die drei Ansichten dieser App sind redaktionelle, kuratierte Auswahllisten, keine amtlichen Rankings. Überschneidungen zwischen den Listen sind beabsichtigt.</div>
+    <div class="note-box">
+      Biografische Angaben wurden gegen offizielle Künstler-Websites, Wikipedia und Konzertveranstalter geprüft. Porträtbilder und YouTube-Videos werden live geladen (Wikipedia bzw. YouTube Data API) statt fest einprogrammiert — so bleiben Lizenzangaben korrekt und Links aktuell gültig. Instagram-Links werden nur angezeigt, wenn das Profil zweifelsfrei verifiziert werden konnte.
+    </div>
+  `;
+  return page;
+}
+
+async function loadMedia(slug){
+  const mainTarget = document.getElementById('img-' + slug);
+  const thumbsTarget = document.getElementById('thumbs-' + slug);
+  const attribTarget = document.getElementById('attrib-' + slug);
+  if(!mainTarget) return;
+  try{
+    let data = mediaCache[slug];
+    if(!data){ data = await fetchJSON(API + '/api/media/' + slug, 7000); mediaCache[slug] = data; }
+    const images = data.images || [];
+    if(images.length === 0) return; // keep monogram placeholder
+
+    const showImage = (idx) => {
+      const im = images[idx];
+      let mainImg = document.getElementById('img-' + slug);
+      if(mainImg.tagName !== 'IMG'){
+        const newImg = document.createElement('img');
+        newImg.className = 'gallery-main'; newImg.id = 'img-' + slug;
+        mainImg.replaceWith(newImg); mainImg = newImg;
+      }
+      mainImg.src = im.url;
+      mainImg.alt = slug;
+      if(attribTarget){
+        attribTarget.innerHTML = im.attribution ? `<div class="img-attrib">Bild via <a href="${im.attribution}" target="_blank" rel="noopener">Wikipedia</a></div>` : '';
+      }
+      [...(thumbsTarget ? thumbsTarget.children : [])].forEach((t,i)=> t.classList.toggle('sel', i===idx));
+    };
+
+    showImage(0);
+    if(thumbsTarget && images.length > 1){
+      thumbsTarget.innerHTML = '';
+      images.forEach((im, i) => {
+        const t = document.createElement('img');
+        t.src = im.url; if(i===0) t.classList.add('sel');
+        t.addEventListener('click', ()=> showImage(i));
+        thumbsTarget.appendChild(t);
+      });
+    }
+  }catch(e){ /* keep monogram placeholder */ }
+}
+
+async function loadYoutube(slug, fallbackSearchUrl){
+  const target = document.getElementById('yt-' + slug);
+  if(!target) return;
+  // Sofort einen funktionierenden Link zeigen statt nur "lädt...", damit der
+  // Nutzer NIE auf einen haengenden Ladezustand starrt (progressive enhancement).
+  target.innerHTML = `<a class="yt-fallback" href="${fallbackSearchUrl}" target="_blank" rel="noopener">▶ Auf YouTube suchen</a>`;
+  try{
+    let data = youtubeCache[slug];
+    if(!data){ data = await fetchJSON(API + '/api/youtube/' + slug, 7000); youtubeCache[slug] = data; }
+    if(data.source === 'api' && data.videos && data.videos.length){
+      target.innerHTML = data.videos.map(v => `
+        <a class="yt-card" href="${v.url}" target="_blank" rel="noopener">
+          <img src="${v.thumbnail || ''}" alt="${(v.title||'').replace(/"/g,'')}" loading="lazy">
+          <div class="yt-title">${v.title || ''}</div>
+        </a>
+      `).join('');
+    }
+    // sonst: der bereits gerenderte Fallback-Link bleibt einfach stehen
+  }catch(e){
+    // Fallback-Link steht schon da - nichts weiter zu tun
+  }
+}
+
+function render(skipAnim){
+  pages.forEach((p,i)=>{
+    const isActive = i===current;
+    p.classList.toggle('active', isActive);
+    p.classList.remove('enter');
+    if(isActive && !skipAnim){ void p.offsetWidth; p.classList.add('enter'); }
+  });
+  document.getElementById('pageno').textContent = `${current+1} / ${pages.length}`;
+  document.getElementById('prev').disabled = current===0;
+  document.getElementById('next').disabled = current===pages.length-1;
+  updateChatContext();
+}
+
+function goNext(){ if(current < pages.length-1){ current++; } else { current = 0; } render(); }
+function goPrev(){ if(current>0){ current--; render(); } }
+
+document.getElementById('prev').addEventListener('click', ()=>{ stopAuto(); goPrev(); restartAutoIfNotPaused(); });
+document.getElementById('next').addEventListener('click', ()=>{ stopAuto(); goNext(); restartAutoIfNotPaused(); });
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight'){ stopAuto(); goNext(); restartAutoIfNotPaused(); }
+  if(e.key==='ArrowLeft'){ stopAuto(); goPrev(); restartAutoIfNotPaused(); }
+});
+
+const playBtn = document.getElementById('playToggle');
+playBtn.addEventListener('click', ()=>{
+  autoPaused = !autoPaused;
+  playBtn.textContent = autoPaused ? '▶ Auto' : '⏸ Auto';
+  if(autoPaused) stopAuto(); else startAuto();
+});
+
+bookEl.addEventListener('mouseenter', ()=>{ if(!autoPaused) stopAuto(); });
+bookEl.addEventListener('mouseleave', ()=>{ if(!autoPaused) startAuto(); });
+
+// subtle 3D tilt following the cursor for a "designer" feel
+bookEl.addEventListener('mousemove', (e)=>{
+  const r = bookEl.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  bookEl.style.transform = `rotateY(${x*2.2}deg) rotateX(${-y*2.2}deg)`;
+});
+bookEl.addEventListener('mouseleave', ()=>{ bookEl.style.transform = 'rotateY(0) rotateX(0)'; });
+
+function startAuto(){ stopAuto(); if(autoPaused) return; autoTimer = setInterval(goNext, AUTO_MS); }
+function stopAuto(){ if(autoTimer){ clearInterval(autoTimer); autoTimer=null; } }
+function restartAutoIfNotPaused(){ if(!autoPaused) startAuto(); }
+
+// ---------- Chat widget: context-awareness + usage tracking ----------
+let chatSessionId = 'sess-' + Math.random().toString(36).slice(2) + Date.now();
+let chatOpen = false;
+let currentArtistContext = null; // { name, slug } der Pianistin, deren Seite gerade sichtbar ist
+let viewedArtists = new Set();
+let nudgeShown = false;
+
+function updateChatContext(){
+  const p = pages[current];
+  const artistName = p ? p.dataset.artistName : null;
+  const artistSlug = p ? p.dataset.artistSlug : null;
+  const ctxEl = document.getElementById('chat-context');
+  if(artistName){
+    currentArtistContext = { name: artistName, slug: artistSlug };
+    if(ctxEl) ctxEl.textContent = `📍 Du betrachtest gerade: ${artistName}`;
+    viewedArtists.add(artistName);
+    maybeShowNudge(artistName);
+  } else {
+    currentArtistContext = null;
+    if(ctxEl) ctxEl.textContent = 'Kein Profil geöffnet — stöbere durch die Listen, ich passe mich an.';
+  }
+}
+
+function maybeShowNudge(artistName){
+  if(nudgeShown || chatOpen) return;
+  clearTimeout(window._nudgeTimer);
+  window._nudgeTimer = setTimeout(() => {
+    if(chatOpen || nudgeShown) return;
+    const nudge = document.getElementById('chat-nudge');
+    nudge.textContent = `Du schaust dir gerade ${artistName} an — soll ich dir etwas dazu erzählen oder etwas anderes vorschlagen?`;
+    nudge.classList.add('show');
+    document.getElementById('chat-badge').classList.add('show');
+    nudgeShown = true;
+    setTimeout(() => nudge.classList.remove('show'), 12000);
+  }, 9000);
+}
+
+function toggleChat(){
+  chatOpen = !chatOpen;
+  document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+  document.getElementById('chat-nudge').classList.remove('show');
+  document.getElementById('chat-badge').classList.remove('show');
+  if(chatOpen) document.getElementById('chat-input').focus();
+}
+function openChat(){ if(!chatOpen) toggleChat(); }
+
+function addChatMsg(text, role){
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+async function sendChat(){
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  addChatMsg(msg, 'user');
+  const typingEl = addChatMsg('Denkt nach …', 'bot typing');
+
+  try{
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 20000);
+    const r = await fetch(API + '/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        message: msg,
+        session_id: chatSessionId,
+        current_artist: currentArtistContext ? currentArtistContext.name : null,
+        viewed_artists: [...viewedArtists],
+        active_list: currentListKey,
+      })
+    });
+    clearTimeout(t);
+    const data = await r.json();
+    typingEl.remove();
+    addChatMsg(data.reply || 'Entschuldigung, dazu ist mir gerade nichts eingefallen.', 'bot');
+  }catch(e){
+    typingEl.remove();
+    addChatMsg('Der Chat ist gerade nicht erreichbar. Bitte später erneut versuchen.', 'bot');
+  }
+}
+
+function initParallax(){
+  const orbs = document.querySelectorAll('.parallax-orb');
+  const heroImg = document.getElementById('hero-img');
+  let ticking = false;
+  function update(){
+    const y = window.scrollY;
+    orbs.forEach(o => {
+      const speed = parseFloat(o.dataset.speed || 0.2);
+      o.style.transform = `translateY(${y * speed}px)`;
+    });
+    if(heroImg){ heroImg.style.transform = `scale(1.08) translateY(${y * 0.12}px)`; }
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if(!ticking){ requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  update();
+}
+initParallax();
+
+function initScrollCue(){
+  const cue = document.querySelector('.hero-scroll-cue');
+  if(!cue) return;
+  cue.addEventListener('click', () => {
+    document.querySelector('.app').scrollIntoView({ behavior:'smooth' });
+  });
+  cue.style.cursor = 'pointer';
+}
+initScrollCue();
+
+init();
+</script>
+</body>
+</html>
