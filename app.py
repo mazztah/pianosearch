@@ -58,7 +58,7 @@ _PIANISTS_BY_SLUG = {p["slug"]: p for p in PIANISTS}
 LIST_META = {
     "newcomers": {
         "key": "newcomers",
-        "title": "Top 25 Junge Newcomerinnen",
+        "title": "Top 25 Newcomerinnen",
         "subtitle": "All-Time High 2026",
         "description": "Nachwuchspianistinnen im internationalen Aufstieg — von Wettbewerbs-Debüts bis zu ersten großen Orchesterengagements.",
     },
