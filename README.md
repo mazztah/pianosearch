@@ -2,7 +2,7 @@
 
 Flask-API + Frontend fuer drei kuratierte Listen:
 
-- **Top 25 Junge Newcomerinnen** — All-Time High 2026
+- **Top 25 Newcomerinnen** — All-Time High 2026
 - **Top 25 Alltime High** — 2026 (etablierte/legendaere Pianistinnen)
 - **Top 20 Aktuell** — Stand Juli 2026 (redaktionelles Schlaglicht)
 
